@@ -4,11 +4,13 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { AppDataProvider } from "@/contexts/AppDataContext";
 import Login from "./pages/Login";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import Products from "./pages/admin/Products";
 import Inventory from "./pages/admin/Inventory";
 import Customers from "./pages/admin/Customers";
+import CustomerDetail from "./pages/admin/CustomerDetail";
 import Orders from "./pages/admin/Orders";
 import AdminMore from "./pages/admin/AdminMore";
 import Trips from "./pages/admin/Trips";
@@ -38,13 +40,13 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/" element={<Navigate to={isAdmin ? "/admin" : "/labour"} replace />} />
 
-      {/* Admin Routes */}
       {isAdmin && (
         <>
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/products" element={<Products />} />
           <Route path="/admin/inventory" element={<Inventory />} />
           <Route path="/admin/customers" element={<Customers />} />
+          <Route path="/admin/customers/:id" element={<CustomerDetail />} />
           <Route path="/admin/orders" element={<Orders />} />
           <Route path="/admin/more" element={<AdminMore />} />
           <Route path="/admin/trips" element={<Trips />} />
@@ -55,7 +57,6 @@ const AppRoutes = () => {
         </>
       )}
 
-      {/* Labour Routes */}
       {!isAdmin && (
         <>
           <Route path="/labour" element={<LabourHome />} />
@@ -75,9 +76,11 @@ const App = () => (
       <Toaster />
       <Sonner />
       <AuthProvider>
-        <BrowserRouter>
-          <AppRoutes />
-        </BrowserRouter>
+        <AppDataProvider>
+          <BrowserRouter>
+            <AppRoutes />
+          </BrowserRouter>
+        </AppDataProvider>
       </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
