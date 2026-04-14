@@ -1,62 +1,90 @@
 import PageHeader from "@/components/PageHeader";
 import BottomNav from "@/components/BottomNav";
+import PageTransition from "@/components/PageTransition";
+import ConfirmDialog from "@/components/ConfirmDialog";
+import { useAuth } from "@/contexts/AuthContext";
+import { useAppData } from "@/contexts/AppDataContext";
 import { Check, MapPin } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-
-const initialDeliveries = [
-  { id: 1, customer: "Sharma General Store", items: "10x Bisleri 1L, 5x Mazza", delivered: false },
-  { id: 2, customer: "Patel Kirana", items: "20x Sprite 250ml", delivered: false },
-  { id: 3, customer: "Krishna Mart", items: "15x Bisleri 500ml", delivered: true },
-  { id: 4, customer: "Balaji Traders", items: "10x Thums Up 750ml", delivered: false },
-  { id: 5, customer: "Mahalaxmi Store", items: "30x Bisleri 250ml", delivered: false },
-];
+import { motion } from "framer-motion";
 
 const Deliveries = () => {
-  const [deliveries, setDeliveries] = useState(initialDeliveries);
+  const { user } = useAuth();
+  const { trips, setTrips } = useAppData();
+  const [confirmDelivery, setConfirmDelivery] = useState<{ tripId: number; customerId: number } | null>(null);
 
-  const markDelivered = (id: number) => {
-    setDeliveries((prev) =>
-      prev.map((d) => (d.id === id ? { ...d, delivered: true } : d))
+  const myTrips = trips.filter((t) => t.labour === user?.name);
+  const allDeliveries = myTrips.flatMap((t) => t.deliveries.map((d) => ({ ...d, tripId: t.id })));
+
+  const markDelivered = () => {
+    if (!confirmDelivery) return;
+    setTrips((prev) =>
+      prev.map((t) =>
+        t.id === confirmDelivery.tripId
+          ? { ...t, deliveries: t.deliveries.map((d) => d.customerId === confirmDelivery.customerId ? { ...d, delivered: true } : d) }
+          : t
+      )
     );
     toast.success("Marked as delivered!");
+    setConfirmDelivery(null);
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      <PageHeader title="Deliveries" subtitle="Today's delivery list" />
-      <div className="px-4 py-4 max-w-lg mx-auto space-y-2">
-        {deliveries.map((d) => (
-          <div
-            key={d.id}
-            className={`bg-card rounded-xl p-4 border flex items-center gap-3 ${
-              d.delivered ? "border-success/30 opacity-70" : "border-border"
-            }`}
-          >
-            <div className="flex-1">
-              <div className="flex items-center gap-1.5">
-                <MapPin className="w-4 h-4 text-primary" />
-                <p className="font-medium text-foreground text-sm">{d.customer}</p>
-              </div>
-              <p className="text-xs text-muted-foreground mt-1 ml-5">{d.items}</p>
-            </div>
-            {d.delivered ? (
-              <span className="flex items-center gap-1 text-xs font-semibold text-success bg-success/10 px-3 py-2 rounded-xl">
-                <Check className="w-4 h-4" /> Done
-              </span>
-            ) : (
-              <button
-                onClick={() => markDelivered(d.id)}
-                className="bg-primary text-primary-foreground px-4 py-2 rounded-xl text-xs font-semibold"
+    <PageTransition>
+      <div className="min-h-screen bg-background pb-20">
+        <PageHeader title="Deliveries" subtitle="Today's delivery list" />
+        <div className="px-4 py-4 max-w-lg mx-auto space-y-2">
+          {allDeliveries.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-12">No deliveries assigned</p>
+          ) : (
+            allDeliveries.map((d, i) => (
+              <motion.div
+                key={`${d.tripId}-${d.customerId}`}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05 }}
+                className={`bg-card rounded-xl p-4 border flex items-center gap-3 ${
+                  d.delivered ? "border-success/30 opacity-70" : "border-border"
+                }`}
               >
-                Deliver
-              </button>
-            )}
-          </div>
-        ))}
+                <div className="flex-1">
+                  <div className="flex items-center gap-1.5">
+                    <MapPin className="w-4 h-4 text-primary" />
+                    <p className="font-medium text-foreground text-sm">{d.customer}</p>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1 ml-5">{d.items}</p>
+                </div>
+                {d.delivered ? (
+                  <span className="flex items-center gap-1 text-xs font-semibold text-success bg-success/10 px-3 py-2 rounded-xl">
+                    <Check className="w-4 h-4" /> Done
+                  </span>
+                ) : (
+                  <motion.button
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setConfirmDelivery({ tripId: d.tripId, customerId: d.customerId })}
+                    className="bg-primary text-primary-foreground px-4 py-2 rounded-xl text-xs font-semibold hover:bg-primary/90 transition-colors"
+                  >
+                    Deliver
+                  </motion.button>
+                )}
+              </motion.div>
+            ))
+          )}
+        </div>
+
+        <ConfirmDialog
+          open={confirmDelivery !== null}
+          onOpenChange={() => setConfirmDelivery(null)}
+          title="Confirm Delivery"
+          description="Mark this delivery as completed?"
+          confirmLabel="Yes, Delivered"
+          onConfirm={markDelivered}
+        />
+
+        <BottomNav />
       </div>
-      <BottomNav />
-    </div>
+    </PageTransition>
   );
 };
 
