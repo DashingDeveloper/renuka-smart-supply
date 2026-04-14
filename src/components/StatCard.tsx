@@ -36,38 +36,3 @@ const StatCard = ({ label, value, icon: Icon, color }: StatCardProps) => (
 );
 
 export default StatCard;
-
-interface StatCardProps {
-  label: string;
-  value: string;
-  icon: LucideIcon;
-  color?: "primary" | "success" | "warning" | "destructive" | "accent";
-}
-
-const colorMap = {
-  primary: "bg-primary/10 text-primary",
-  success: "bg-success/10 text-success",
-  warning: "bg-warning/10 text-warning",
-  destructive: "bg-destructive/10 text-destructive",
-  accent: "bg-accent/10 text-accent",
-};
-
-const StatCard = ({ label, value, icon: Icon, color = "primary" }: StatCardProps) => (
-  <motion.div
-    initial={{ opacity: 0, y: 10 }}
-    animate={{ opacity: 1, y: 0 }}
-    className="bg-card rounded-2xl p-4 border border-border shadow-sm"
-  >
-    <div className="flex items-center gap-3">
-      <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${colorMap[color]}`}>
-        <Icon className="w-5 h-5" />
-      </div>
-      <div>
-        <p className="text-xs text-muted-foreground">{label}</p>
-        <p className="text-lg font-bold text-foreground">{value}</p>
-      </div>
-    </div>
-  </motion.div>
-);
-
-export default StatCard;
