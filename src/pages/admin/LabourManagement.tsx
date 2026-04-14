@@ -1,47 +1,83 @@
 import PageHeader from "@/components/PageHeader";
 import BottomNav from "@/components/BottomNav";
-import { Phone, Calendar, IndianRupee } from "lucide-react";
+import PageTransition from "@/components/PageTransition";
+import ConfirmDialog from "@/components/ConfirmDialog";
+import { useAppData } from "@/contexts/AppDataContext";
+import { Phone, Calendar, IndianRupee, UserCheck, UserX } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import { motion } from "framer-motion";
 
-const mockLabour = [
-  { id: 1, name: "Ramesh", phone: "9876543211", salary: "Monthly", present: true, paid: 8000, pending: 4000 },
-  { id: 2, name: "Suresh", phone: "9876543212", salary: "Weekly", present: true, paid: 3000, pending: 1500 },
-  { id: 3, name: "Mahesh", phone: "9876543213", salary: "Daily", present: false, paid: 6000, pending: 0 },
-  { id: 4, name: "Ganesh", phone: "9876543214", salary: "Monthly", present: true, paid: 7000, pending: 5000 },
-  { id: 5, name: "Dinesh", phone: "9876543215", salary: "Weekly", present: true, paid: 2500, pending: 1000 },
-];
+const LabourManagement = () => {
+  const { labours, setLabours } = useAppData();
+  const [toggleId, setToggleId] = useState<number | null>(null);
+  const toggleLabour = labours.find((l) => l.id === toggleId);
 
-const LabourManagement = () => (
-  <div className="min-h-screen bg-background pb-20">
-    <PageHeader title="Labour" subtitle="Manage workers" />
-    <div className="px-4 py-4 max-w-lg mx-auto space-y-2">
-      {mockLabour.map((l) => (
-        <div key={l.id} className="bg-card rounded-xl p-4 border border-border">
-          <div className="flex items-center justify-between mb-2">
-            <div>
-              <p className="font-medium text-foreground">{l.name}</p>
-              <div className="flex items-center gap-1 mt-0.5">
-                <Phone className="w-3 h-3 text-muted-foreground" />
-                <span className="text-xs text-muted-foreground">{l.phone}</span>
+  const handleToggle = () => {
+    if (toggleId !== null) {
+      setLabours((prev) =>
+        prev.map((l) => l.id === toggleId ? { ...l, present: !l.present } : l)
+      );
+      toast.success("Attendance updated!");
+      setToggleId(null);
+    }
+  };
+
+  return (
+    <PageTransition>
+      <div className="min-h-screen bg-background pb-20">
+        <PageHeader title="Labour" subtitle={`${labours.length} workers · ${labours.filter(l => l.present).length} present`} />
+        <div className="px-4 py-4 max-w-lg mx-auto space-y-2">
+          {labours.map((l, i) => (
+            <motion.div
+              key={l.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05 }}
+              className="bg-card rounded-xl p-4 border border-border hover:shadow-md transition-shadow"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <div>
+                  <p className="font-medium text-foreground">{l.name}</p>
+                  <div className="flex items-center gap-1 mt-0.5">
+                    <Phone className="w-3 h-3 text-muted-foreground" />
+                    <span className="text-xs text-muted-foreground">{l.phone}</span>
+                  </div>
+                </div>
+                <motion.button
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => setToggleId(l.id)}
+                  className={`flex items-center gap-1 text-[10px] font-semibold px-3 py-1.5 rounded-full transition-colors ${
+                    l.present ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive"
+                  }`}
+                >
+                  {l.present ? <><UserCheck className="w-3 h-3" /> Present</> : <><UserX className="w-3 h-3" /> Absent</>}
+                </motion.button>
               </div>
-            </div>
-            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-              l.present ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive"
-            }`}>
-              {l.present ? "Present" : "Absent"}
-            </span>
-          </div>
-          <div className="flex gap-4 text-xs text-muted-foreground pt-2 border-t border-border">
-            <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {l.salary}</span>
-            <span className="flex items-center gap-1"><IndianRupee className="w-3 h-3" /> Paid: ₹{l.paid}</span>
-            {l.pending > 0 && (
-              <span className="text-destructive font-medium">Pending: ₹{l.pending}</span>
-            )}
-          </div>
+              <div className="flex gap-4 text-xs text-muted-foreground pt-2 border-t border-border">
+                <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {l.salary}</span>
+                <span className="flex items-center gap-1"><IndianRupee className="w-3 h-3" /> Paid: ₹{l.paid}</span>
+                {l.pending > 0 && (
+                  <span className="text-destructive font-medium">Pending: ₹{l.pending}</span>
+                )}
+              </div>
+            </motion.div>
+          ))}
         </div>
-      ))}
-    </div>
-    <BottomNav />
-  </div>
-);
+
+        <ConfirmDialog
+          open={toggleId !== null}
+          onOpenChange={() => setToggleId(null)}
+          title="Update Attendance"
+          description={toggleLabour ? `Mark ${toggleLabour.name} as ${toggleLabour.present ? "Absent" : "Present"}?` : ""}
+          confirmLabel={toggleLabour?.present ? "Mark Absent" : "Mark Present"}
+          onConfirm={handleToggle}
+        />
+
+        <BottomNav />
+      </div>
+    </PageTransition>
+  );
+};
 
 export default LabourManagement;
