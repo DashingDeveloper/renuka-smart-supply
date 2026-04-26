@@ -21,7 +21,7 @@ const StatCard = ({ label, value, icon: Icon, color }: StatCardProps) => (
     initial={{ opacity: 0, scale: 0.95 }}
     animate={{ opacity: 1, scale: 1 }}
     whileTap={{ scale: 0.97 }}
-    className="bg-card rounded-2xl p-4 border border-border shadow-sm hover:shadow-md transition-shadow"
+    className="bg-card rounded-xl p-4 border border-border shadow-sm hover:shadow-md transition-shadow"
   >
     <div className="flex items-center gap-3">
       <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${colorMap[color]}`}>

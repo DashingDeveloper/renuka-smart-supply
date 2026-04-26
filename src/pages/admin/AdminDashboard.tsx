@@ -40,10 +40,10 @@ const AdminDashboard = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-background pb-20">
+      <div className="min-h-screen bg-background pb-24 md:pb-28">
         <PageHeader title={`Hi, ${user?.name}`} subtitle="Welcome to Renuka Aqua" />
-        <div className="px-4 py-4 max-w-lg mx-auto space-y-6">
-          <div className="grid grid-cols-2 gap-3">
+        <div className="mx-auto w-full max-w-6xl px-4 py-4 sm:px-6 lg:px-8 space-y-6">
+          <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-3">
             <StatCard label="Today Sales" value={`₹${todaySales.toLocaleString()}`} icon={IndianRupee} color="success" />
             <StatCard label="Cash Collected" value="₹8,200" icon={Wallet} color="primary" />
             <StatCard label="Pending" value={`₹${pendingAmount.toLocaleString()}`} icon={Clock} color="warning" />
@@ -52,7 +52,7 @@ const AdminDashboard = () => {
 
           <div>
             <h2 className="text-sm font-semibold text-muted-foreground mb-3">Quick Actions</h2>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
               {quickActions.map((action, i) => (
                 <motion.button
                   key={action.label}
@@ -61,7 +61,7 @@ const AdminDashboard = () => {
                   transition={{ delay: i * 0.05 }}
                   whileTap={{ scale: 0.92 }}
                   onClick={() => navigate(action.path)}
-                  className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-card border border-border shadow-sm hover:shadow-md transition-all"
+                  className="flex flex-col items-center gap-2 p-4 rounded-xl bg-card border border-border shadow-sm hover:shadow-md transition-all"
                 >
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${action.color}`}>
                     <action.icon className="w-6 h-6" />
@@ -79,7 +79,7 @@ const AdminDashboard = () => {
                 View All →
               </motion.button>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-3">
               {recentOrders.map((order, i) => (
                 <motion.div
                   key={order.id}

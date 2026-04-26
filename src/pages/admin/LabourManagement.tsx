@@ -25,9 +25,9 @@ const LabourManagement = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-background pb-20">
+      <div className="min-h-screen bg-background pb-24 md:pb-28">
         <PageHeader title="Labour" subtitle={`${labours.length} workers · ${labours.filter(l => l.present).length} present`} />
-        <div className="px-4 py-4 max-w-lg mx-auto space-y-2">
+        <div className="mx-auto w-full max-w-6xl px-4 py-4 sm:px-6 lg:px-8 space-y-3">
           {labours.map((l, i) => (
             <motion.div
               key={l.id}

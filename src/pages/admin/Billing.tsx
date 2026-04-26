@@ -57,10 +57,10 @@ const Billing = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-background pb-20">
+      <div className="min-h-screen bg-background pb-24 md:pb-28">
         <PageHeader title="Billing" subtitle="Generate invoices" />
-        <div className="px-4 py-4 max-w-lg mx-auto space-y-4">
-          <div className="bg-card rounded-2xl p-4 border border-border space-y-4">
+        <div className="mx-auto w-full max-w-6xl px-4 py-4 sm:px-6 lg:px-8 space-y-4">
+          <div className="bg-card rounded-xl p-4 border border-border space-y-4">
             <div>
               <label className="text-xs font-medium text-muted-foreground mb-1 block">Select Customer</label>
               <Select value={selectedCustomer} onValueChange={setSelectedCustomer}>
@@ -73,7 +73,7 @@ const Billing = () => {
 
             <div>
               <label className="text-xs font-medium text-muted-foreground mb-2 block">Products</label>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {billItems.map((item, i) => (
                   <div key={i} className="flex gap-2">
                     <Select value={item.productId} onValueChange={(v) => updateItem(i, "productId", v)}>
@@ -104,7 +104,7 @@ const Billing = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 xs:grid-cols-3 gap-2">
             <motion.button whileTap={{ scale: 0.95 }} onClick={handleGenerate} disabled={generating} className="h-12 bg-primary text-primary-foreground rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-primary/90 transition-colors">
               {generating ? "..." : "Generate"}
             </motion.button>

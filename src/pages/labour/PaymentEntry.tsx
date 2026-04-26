@@ -38,13 +38,13 @@ const PaymentEntry = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-background pb-20">
+      <div className="min-h-screen bg-background pb-24 md:pb-28">
         <PageHeader title="Payment Entry" subtitle="Record payment received" />
-        <div className="px-4 py-4 max-w-lg mx-auto">
+        <div className="mx-auto w-full max-w-6xl px-4 py-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-card rounded-2xl p-5 border border-border space-y-5"
+            className="bg-card rounded-xl p-5 border border-border space-y-5"
           >
             <div>
               <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Customer</label>

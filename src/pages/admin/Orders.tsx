@@ -77,9 +77,9 @@ const Orders = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-background pb-20">
+      <div className="min-h-screen bg-background pb-24 md:pb-28">
         <PageHeader title="Orders" subtitle={`${orders.length} orders`} />
-        <div className="px-4 py-4 max-w-lg mx-auto space-y-4">
+        <div className="mx-auto w-full max-w-6xl px-4 py-4 sm:px-6 lg:px-8 space-y-4">
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => setDialogOpen(true)}
@@ -91,7 +91,7 @@ const Orders = () => {
           {orders.length === 0 ? (
             <EmptyState icon={ShoppingCart} title="No orders yet" description="Create your first order" />
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-3">
               {orders.map((o, i) => (
                 <motion.div
                   key={o.id}
@@ -131,7 +131,7 @@ const Orders = () => {
         </div>
 
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogContent className="max-w-sm mx-auto rounded-2xl max-h-[85vh] overflow-y-auto">
+          <DialogContent className="max-w-sm mx-auto rounded-xl max-h-[85vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Create Order</DialogTitle>
             </DialogHeader>
@@ -148,7 +148,7 @@ const Orders = () => {
 
               <div>
                 <label className="text-xs font-medium text-muted-foreground mb-2 block">Products</label>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {orderItems.map((item, i) => (
                     <div key={i} className="flex gap-2">
                       <Select value={item.productId} onValueChange={(v) => updateItem(i, "productId", v)}>

@@ -59,9 +59,9 @@ const Inventory = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-background pb-20">
+      <div className="min-h-screen bg-background pb-24 md:pb-28">
         <PageHeader title="Godown / Inventory" subtitle={`${products.length} products · ${lowStockCount} low stock`} />
-        <div className="px-4 py-4 max-w-lg mx-auto space-y-4">
+        <div className="mx-auto w-full max-w-6xl px-4 py-4 sm:px-6 lg:px-8 space-y-4">
           <div className="flex gap-2">
             <motion.button
               whileTap={{ scale: 0.95 }}
@@ -79,7 +79,7 @@ const Inventory = () => {
             </motion.button>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-3">
             {products.map((item, i) => (
               <motion.div
                 key={item.id}
@@ -104,7 +104,7 @@ const Inventory = () => {
         </div>
 
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogContent className="max-w-sm mx-auto rounded-2xl">
+          <DialogContent className="max-w-sm mx-auto rounded-xl">
             <DialogHeader>
               <DialogTitle>{mode === "add" ? "Add Stock" : "Adjust Stock"}</DialogTitle>
             </DialogHeader>

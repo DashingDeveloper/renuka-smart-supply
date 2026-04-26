@@ -16,10 +16,10 @@ const LabourHome = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-background pb-20">
+      <div className="min-h-screen bg-background pb-24 md:pb-28">
         <PageHeader title={`Hi, ${user?.name}`} subtitle="Today's assignments" />
-        <div className="px-4 py-4 max-w-lg mx-auto space-y-6">
-          <div className="grid grid-cols-2 gap-3">
+        <div className="mx-auto w-full max-w-6xl px-4 py-4 sm:px-6 lg:px-8 space-y-6">
+          <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-3">
             <StatCard label="Trips Today" value={String(myTrips.length)} icon={Truck} color="primary" />
             <StatCard label="Deliveries" value={String(totalDeliveries)} icon={MapPin} color="accent" />
             <StatCard label="Products Loaded" value={String(myTrips.reduce((s, t) => s + t.products, 0))} icon={Package} color="success" />
@@ -38,7 +38,7 @@ const LabourHome = () => {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.1 }}
-                    className="bg-card rounded-2xl p-4 border border-border space-y-3"
+                    className="bg-card rounded-xl p-4 border border-border space-y-3"
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">

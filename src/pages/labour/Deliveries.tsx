@@ -32,9 +32,9 @@ const Deliveries = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-background pb-20">
+      <div className="min-h-screen bg-background pb-24 md:pb-28">
         <PageHeader title="Deliveries" subtitle="Today's delivery list" />
-        <div className="px-4 py-4 max-w-lg mx-auto space-y-2">
+        <div className="mx-auto w-full max-w-6xl px-4 py-4 sm:px-6 lg:px-8 space-y-3">
           {allDeliveries.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-12">No deliveries assigned</p>
           ) : (
