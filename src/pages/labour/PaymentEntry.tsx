@@ -6,6 +6,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { IndianRupee } from "lucide-react";
 import { motion } from "framer-motion";
+import { parsePositiveNumber, todayLabel } from "@/lib/validation";
 import {
   Select,
   SelectContent,
@@ -22,16 +23,17 @@ const PaymentEntry = () => {
   const [saving, setSaving] = useState(false);
 
   const handleSubmit = async () => {
+    const paidAmount = parsePositiveNumber(amount, 1000000);
     if (!customer) { toast.error("Select a customer"); return; }
-    if (!amount || Number(amount) <= 0) { toast.error("Enter a valid amount"); return; }
+    if (!paidAmount) { toast.error("Enter a valid amount"); return; }
     setSaving(true);
     await new Promise((r) => setTimeout(r, 500));
     const cust = customers.find((c) => c.id === Number(customer));
     setTransactions((prev) => [
-      { id: Math.max(...prev.map((t) => t.id), 0) + 1, desc: `${cust?.name} Payment`, amount: Number(amount), type, category: "Income", date: "14 Apr" },
+      { id: Math.max(...prev.map((t) => t.id), 0) + 1, desc: `${cust?.name} Payment`, amount: paidAmount, type, category: "Income", date: todayLabel() },
       ...prev,
     ]);
-    toast.success(`₹${amount} received from ${cust?.name} via ${type}`);
+    toast.success("Payment received", { description: `₹${paidAmount.toLocaleString()} from ${cust?.name} via ${type}` });
     setAmount("");
     setSaving(false);
   };
