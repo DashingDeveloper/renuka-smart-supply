@@ -5,6 +5,7 @@ import { useAppData } from "@/contexts/AppDataContext";
 import { toast } from "sonner";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { parsePositiveInteger } from "@/lib/validation";
 import {
   Select,
   SelectContent,
@@ -25,6 +26,14 @@ const Billing = () => {
   };
   const removeItem = (i: number) => setBillItems((prev) => prev.filter((_, idx) => idx !== i));
 
+  const validatedItems = () => billItems
+    .map((item) => {
+      const product = products.find((p) => p.id === Number(item.productId));
+      const qty = parsePositiveInteger(item.qty, 5000);
+      return product && qty ? { product, qty } : null;
+    })
+    .filter(Boolean) as { product: typeof products[number]; qty: number }[];
+
   const total = billItems.reduce((sum, item) => {
     const product = products.find((p) => p.id === Number(item.productId));
     return sum + (product ? product.price * Number(item.qty || 0) : 0);
@@ -32,17 +41,20 @@ const Billing = () => {
 
   const handleGenerate = async () => {
     if (!selectedCustomer) { toast.error("Select a customer"); return; }
-    const valid = billItems.filter((i) => i.productId && Number(i.qty) > 0);
-    if (valid.length === 0) { toast.error("Add products"); return; }
+    const valid = validatedItems();
+    if (valid.length === 0) { toast.error("Add at least one valid product quantity"); return; }
+    const outOfStock = valid.find(({ product, qty }) => qty > product.stock);
+    if (outOfStock) { toast.error("Billing quantity exceeds stock", { description: `${outOfStock.product.name} ${outOfStock.product.size}: ${outOfStock.product.stock} available.` }); return; }
     setGenerating(true);
     await new Promise((r) => setTimeout(r, 600));
-    toast.success("Bill generated successfully!");
+    toast.success("Bill generated successfully", { description: `Total amount ₹${total.toLocaleString()}` });
     setGenerating(false);
   };
 
   const handleWhatsApp = () => {
     const customer = customers.find((c) => c.id === Number(selectedCustomer));
     if (!customer) { toast.error("Select a customer first"); return; }
+    if (validatedItems().length === 0) { toast.error("Add valid products before sharing"); return; }
     const items = billItems
       .filter((i) => i.productId && Number(i.qty) > 0)
       .map((i) => {
@@ -52,7 +64,7 @@ const Billing = () => {
       .filter(Boolean)
       .join("\n");
     const msg = encodeURIComponent(`*Renuka Aqua - Invoice*\n\nCustomer: ${customer.name}\n\n${items}\n\n*Total: ₹${total}*\n\nThank you!`);
-    window.open(`https://wa.me/91${customer.phone}?text=${msg}`, "_blank");
+    window.open(`https://wa.me/91${customer.phone}?text=${msg}`, "_blank", "noopener,noreferrer");
   };
 
   return (
