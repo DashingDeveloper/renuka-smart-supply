@@ -6,6 +6,7 @@ import { Plus, AlertTriangle, Minus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { parsePositiveInteger } from "@/lib/validation";
 import {
   Dialog,
   DialogContent,
@@ -36,13 +37,18 @@ const Inventory = () => {
   };
 
   const handleSave = async () => {
-    if (!selectedProduct || !qty) {
+    const amount = parsePositiveInteger(qty, 5000);
+    const product = products.find((p) => p.id === Number(selectedProduct));
+    if (!selectedProduct || !amount || !product) {
       toast.error("Select a product and enter quantity");
+      return;
+    }
+    if (mode === "adjust" && amount > product.stock) {
+      toast.error("Quantity is more than available stock", { description: `${product.name} ${product.size} has only ${product.stock} units.` });
       return;
     }
     setSaving(true);
     await new Promise((r) => setTimeout(r, 400));
-    const amount = Number(qty);
     setProducts((prev) =>
       prev.map((p) =>
         p.id === Number(selectedProduct)
@@ -50,7 +56,9 @@ const Inventory = () => {
           : p
       )
     );
-    toast.success(mode === "add" ? `Added ${amount} units` : `Adjusted stock by -${amount}`);
+    toast.success(mode === "add" ? "Stock added successfully" : "Stock reduced successfully", {
+      description: `${amount} units · ${product.name} ${product.size}`,
+    });
     setSaving(false);
     setDialogOpen(false);
   };
