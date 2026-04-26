@@ -62,7 +62,7 @@ const BottomNav = () => {
                 />
               )}
               <item.icon className={`w-6 h-6 ${active ? "stroke-[2.5]" : ""}`} />
-              <span className="max-w-full truncate text-[10px] font-medium">{item.label}</span>
+              <span className="whitespace-nowrap text-[9px] font-medium leading-none xs:text-[10px]">{item.label}</span>
             </motion.button>
           );
         })}
