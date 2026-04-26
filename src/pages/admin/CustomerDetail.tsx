@@ -26,13 +26,13 @@ const CustomerDetail = () => {
   return (
     <PageTransition>
       <div className="min-h-screen bg-background pb-24 md:pb-28">
-        <div className="sticky top-0 z-40 bg-card/80 backdrop-blur-lg border-b border-border px-4 py-3">
-          <div className="flex items-center gap-3 max-w-lg mx-auto">
-            <motion.button whileTap={{ scale: 0.9 }} onClick={() => navigate(-1)} className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center">
+        <div className="sticky top-0 z-40 border-b border-border bg-card/80 px-4 py-3 backdrop-blur-lg sm:px-6 lg:px-8">
+          <div className="mx-auto flex w-full max-w-6xl items-center gap-3">
+            <motion.button whileTap={{ scale: 0.9 }} onClick={() => navigate(-1)} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary">
               <ArrowLeft className="w-5 h-5 text-foreground" />
             </motion.button>
-            <div>
-              <h1 className="text-lg font-bold text-foreground">{customer.name}</h1>
+            <div className="min-w-0">
+              <h1 className="truncate text-base font-bold text-foreground sm:text-lg">{customer.name}</h1>
               <div className="flex items-center gap-1">
                 <Phone className="w-3 h-3 text-muted-foreground" />
                 <p className="text-xs text-muted-foreground">{customer.phone}</p>
