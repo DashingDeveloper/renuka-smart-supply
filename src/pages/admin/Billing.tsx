@@ -55,13 +55,8 @@ const Billing = () => {
     const customer = customers.find((c) => c.id === Number(selectedCustomer));
     if (!customer) { toast.error("Select a customer first"); return; }
     if (validatedItems().length === 0) { toast.error("Add valid products before sharing"); return; }
-    const items = billItems
-      .filter((i) => i.productId && Number(i.qty) > 0)
-      .map((i) => {
-        const p = products.find((pr) => pr.id === Number(i.productId));
-        return p ? `${i.qty}x ${p.name} ${p.size} = ₹${Number(i.qty) * p.price}` : "";
-      })
-      .filter(Boolean)
+    const items = validatedItems()
+      .map(({ product, qty }) => `${qty}x ${product.name} ${product.size} = ₹${qty * product.price}`)
       .join("\n");
     const msg = encodeURIComponent(`*Renuka Aqua - Invoice*\n\nCustomer: ${customer.name}\n\n${items}\n\n*Total: ₹${total}*\n\nThank you!`);
     window.open(`https://wa.me/91${customer.phone}?text=${msg}`, "_blank", "noopener,noreferrer");
