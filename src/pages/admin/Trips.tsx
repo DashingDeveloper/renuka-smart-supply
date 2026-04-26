@@ -53,9 +53,9 @@ const Trips = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-background pb-20">
+      <div className="min-h-screen bg-background pb-24 md:pb-28">
         <PageHeader title="Vehicles & Trips" subtitle={`${trips.length} trips`} />
-        <div className="px-4 py-4 max-w-lg mx-auto space-y-4">
+        <div className="mx-auto w-full max-w-6xl px-4 py-4 sm:px-6 lg:px-8 space-y-4">
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => setDialogOpen(true)}
@@ -64,14 +64,14 @@ const Trips = () => {
             <Plus className="w-5 h-5" /> Create Trip
           </motion.button>
 
-          <div className="space-y-2">
+          <div className="space-y-3">
             {trips.map((t, i) => (
               <motion.div
                 key={t.id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.03 }}
-                className="bg-card rounded-xl p-4 border border-border space-y-2 hover:shadow-md transition-shadow"
+                className="bg-card rounded-xl p-4 border border-border space-y-3 hover:shadow-md transition-shadow"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -104,7 +104,7 @@ const Trips = () => {
         </div>
 
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogContent className="max-w-sm mx-auto rounded-2xl">
+          <DialogContent className="max-w-sm mx-auto rounded-xl">
             <DialogHeader><DialogTitle>Create Trip</DialogTitle></DialogHeader>
             <div className="space-y-4 pt-2">
               <div>

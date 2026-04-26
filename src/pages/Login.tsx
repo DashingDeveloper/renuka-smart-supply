@@ -32,7 +32,7 @@ const Login = () => {
         className="w-full max-w-sm"
       >
         <div className="flex flex-col items-center mb-10">
-          <div className="w-20 h-20 rounded-2xl bg-primary flex items-center justify-center mb-4 shadow-lg">
+          <div className="w-20 h-20 rounded-xl bg-primary flex items-center justify-center mb-4 shadow-lg">
             <Droplets className="w-10 h-10 text-primary-foreground" />
           </div>
           <h1 className="text-2xl font-bold text-foreground">Renuka Aqua</h1>

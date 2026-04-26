@@ -32,9 +32,9 @@ const Reports = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-background pb-20">
+      <div className="min-h-screen bg-background pb-24 md:pb-28">
         <PageHeader title="Reports" subtitle="Business analytics" />
-        <div className="px-4 py-4 max-w-lg mx-auto space-y-6">
+        <div className="mx-auto w-full max-w-6xl px-4 py-4 sm:px-6 lg:px-8 space-y-6">
           {/* Period Selector */}
           <div className="flex bg-secondary rounded-xl p-1">
             {periods.map((p) => (
@@ -51,7 +51,7 @@ const Reports = () => {
             ))}
           </div>
 
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-2xl p-4 border border-border">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-xl p-4 border border-border">
             <h3 className="text-sm font-semibold text-foreground mb-3">Daily Sales</h3>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={dailySales}>
@@ -64,7 +64,7 @@ const Reports = () => {
             </ResponsiveContainer>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-card rounded-2xl p-4 border border-border">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-card rounded-xl p-4 border border-border">
             <h3 className="text-sm font-semibold text-foreground mb-3">Top Selling Products</h3>
             <ResponsiveContainer width="100%" height={200}>
               <PieChart>
@@ -78,12 +78,12 @@ const Reports = () => {
             </ResponsiveContainer>
           </motion.div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2 }} className="bg-card rounded-2xl p-4 border border-border text-center">
+          <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-3">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2 }} className="bg-card rounded-xl p-4 border border-border text-center">
               <p className="text-xs text-muted-foreground">Monthly Revenue</p>
               <p className="text-2xl font-bold text-success mt-1">₹1.2L</p>
             </motion.div>
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.25 }} className="bg-card rounded-2xl p-4 border border-border text-center">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.25 }} className="bg-card rounded-xl p-4 border border-border text-center">
               <p className="text-xs text-muted-foreground">Monthly Expenses</p>
               <p className="text-2xl font-bold text-destructive mt-1">₹45K</p>
             </motion.div>

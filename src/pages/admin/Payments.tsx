@@ -54,11 +54,11 @@ const Payments = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-background pb-20">
+      <div className="min-h-screen bg-background pb-24 md:pb-28">
         <PageHeader title="Payments" subtitle="Track money flow" />
-        <div className="px-4 py-4 max-w-lg mx-auto space-y-4">
+        <div className="mx-auto w-full max-w-6xl px-4 py-4 sm:px-6 lg:px-8 space-y-4">
           {/* Summary */}
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 xs:grid-cols-3 gap-2">
             <div className="bg-card rounded-xl p-3 border border-border text-center">
               <p className="text-[10px] text-muted-foreground">Income</p>
               <p className="text-sm font-bold text-success">₹{totals.Income}</p>
@@ -98,7 +98,7 @@ const Payments = () => {
             + Add Transaction
           </motion.button>
 
-          <div className="space-y-2">
+          <div className="space-y-3">
             {filtered.length === 0 ? (
               <p className="text-center text-sm text-muted-foreground py-8">No transactions in this category</p>
             ) : (
@@ -124,7 +124,7 @@ const Payments = () => {
         </div>
 
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogContent className="max-w-sm mx-auto rounded-2xl">
+          <DialogContent className="max-w-sm mx-auto rounded-xl">
             <DialogHeader><DialogTitle>Add Transaction</DialogTitle></DialogHeader>
             <div className="space-y-4 pt-2">
               <div>

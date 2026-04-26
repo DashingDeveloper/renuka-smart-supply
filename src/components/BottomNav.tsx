@@ -39,8 +39,8 @@ const BottomNav = () => {
   const items = isAdmin ? adminNav : labourNav;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-lg border-t border-border safe-bottom z-50">
-      <div className="flex justify-around items-center h-16 max-w-lg mx-auto">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card/95 px-2 backdrop-blur-lg safe-bottom sm:px-4">
+      <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-around gap-1">
         {items.map((item) => {
           const active = location.pathname === item.path || (item.path !== "/admin" && item.path !== "/labour" && location.pathname.startsWith(item.path));
           return (
@@ -48,7 +48,7 @@ const BottomNav = () => {
               key={item.path}
               whileTap={{ scale: 0.85 }}
               onClick={() => navigate(item.path)}
-              className={`flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg transition-colors relative ${
+              className={`relative flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-lg px-1 py-1 transition-colors sm:max-w-28 sm:px-3 ${
                 active
                   ? "text-primary"
                   : "text-muted-foreground hover:text-foreground"
@@ -62,7 +62,7 @@ const BottomNav = () => {
                 />
               )}
               <item.icon className={`w-6 h-6 ${active ? "stroke-[2.5]" : ""}`} />
-              <span className="text-[10px] font-medium">{item.label}</span>
+              <span className="whitespace-nowrap text-[9px] font-medium leading-none xs:text-[10px]">{item.label}</span>
             </motion.button>
           );
         })}

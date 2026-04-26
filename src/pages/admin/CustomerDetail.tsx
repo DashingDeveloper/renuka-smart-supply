@@ -25,14 +25,14 @@ const CustomerDetail = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-background pb-20">
-        <div className="sticky top-0 z-40 bg-card/80 backdrop-blur-lg border-b border-border px-4 py-3">
-          <div className="flex items-center gap-3 max-w-lg mx-auto">
-            <motion.button whileTap={{ scale: 0.9 }} onClick={() => navigate(-1)} className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center">
+      <div className="min-h-screen bg-background pb-24 md:pb-28">
+        <div className="sticky top-0 z-40 border-b border-border bg-card/80 px-4 py-3 backdrop-blur-lg sm:px-6 lg:px-8">
+          <div className="mx-auto flex w-full max-w-6xl items-center gap-3">
+            <motion.button whileTap={{ scale: 0.9 }} onClick={() => navigate(-1)} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary">
               <ArrowLeft className="w-5 h-5 text-foreground" />
             </motion.button>
-            <div>
-              <h1 className="text-lg font-bold text-foreground">{customer.name}</h1>
+            <div className="min-w-0">
+              <h1 className="truncate text-base font-bold text-foreground sm:text-lg">{customer.name}</h1>
               <div className="flex items-center gap-1">
                 <Phone className="w-3 h-3 text-muted-foreground" />
                 <p className="text-xs text-muted-foreground">{customer.phone}</p>
@@ -41,14 +41,14 @@ const CustomerDetail = () => {
           </div>
         </div>
 
-        <div className="px-4 py-4 max-w-lg mx-auto space-y-6">
+        <div className="mx-auto w-full max-w-6xl px-4 py-4 sm:px-6 lg:px-8 space-y-6">
           {/* Stats */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="bg-card rounded-2xl p-4 border border-border text-center">
+          <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="bg-card rounded-xl p-4 border border-border text-center">
               <p className="text-xs text-muted-foreground">Total Orders</p>
               <p className="text-2xl font-bold text-primary mt-1">{customerOrders.length}</p>
             </div>
-            <div className="bg-card rounded-2xl p-4 border border-border text-center">
+            <div className="bg-card rounded-xl p-4 border border-border text-center">
               <p className="text-xs text-muted-foreground">Pending Amount</p>
               <p className={`text-2xl font-bold mt-1 ${customer.pending > 0 ? "text-destructive" : "text-success"}`}>₹{customer.pending}</p>
             </div>
@@ -62,7 +62,7 @@ const CustomerDetail = () => {
             {customerOrders.length === 0 ? (
               <p className="text-sm text-muted-foreground py-4 text-center">No orders yet</p>
             ) : (
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {customerOrders.map((o) => (
                   <div key={o.id} className="bg-card rounded-xl p-3 border border-border">
                     <div className="flex items-center justify-between mb-1">
@@ -87,7 +87,7 @@ const CustomerDetail = () => {
             {customerPayments.length === 0 ? (
               <p className="text-sm text-muted-foreground py-4 text-center">No payments recorded</p>
             ) : (
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {customerPayments.map((t) => (
                   <div key={t.id} className="bg-card rounded-xl p-3 border border-border flex items-center justify-between">
                     <div>

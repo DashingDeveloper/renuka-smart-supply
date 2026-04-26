@@ -81,9 +81,9 @@ const Products = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-background pb-20">
+      <div className="min-h-screen bg-background pb-24 md:pb-28">
         <PageHeader title="Products" subtitle="Manage your products" />
-        <div className="px-4 py-4 max-w-lg mx-auto space-y-4">
+        <div className="mx-auto w-full max-w-6xl px-4 py-4 sm:px-6 lg:px-8 space-y-4">
           <div className="flex gap-2">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -109,7 +109,7 @@ const Products = () => {
             } />
           ) : (
             <AnimatePresence>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {filtered.map((p, i) => (
                   <motion.div
                     key={p.id}
@@ -143,7 +143,7 @@ const Products = () => {
         </div>
 
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogContent className="max-w-sm mx-auto rounded-2xl">
+          <DialogContent className="max-w-sm mx-auto rounded-xl">
             <DialogHeader>
               <DialogTitle>{editProduct ? "Edit Product" : "Add Product"}</DialogTitle>
             </DialogHeader>
