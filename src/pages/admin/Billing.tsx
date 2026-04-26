@@ -75,9 +75,9 @@ const Billing = () => {
               <label className="text-xs font-medium text-muted-foreground mb-2 block">Products</label>
               <div className="space-y-3">
                 {billItems.map((item, i) => (
-                  <div key={i} className="flex gap-2">
+                  <div key={i} className="grid grid-cols-[minmax(0,1fr)_5rem_auto] gap-2">
                     <Select value={item.productId} onValueChange={(v) => updateItem(i, "productId", v)}>
-                      <SelectTrigger className="h-10 rounded-lg flex-1"><SelectValue placeholder="Product" /></SelectTrigger>
+                      <SelectTrigger className="h-10 min-w-0 rounded-lg"><SelectValue placeholder="Product" /></SelectTrigger>
                       <SelectContent>
                         {products.map((p) => <SelectItem key={p.id} value={String(p.id)}>{p.name} {p.size} - ₹{p.price}</SelectItem>)}
                       </SelectContent>
@@ -87,7 +87,7 @@ const Billing = () => {
                       value={item.qty}
                       onChange={(e) => updateItem(i, "qty", e.target.value)}
                       placeholder="Qty"
-                      className="w-20 h-10 px-3 bg-secondary rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="h-10 w-full rounded-lg bg-secondary px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                     />
                     {billItems.length > 1 && (
                       <button onClick={() => removeItem(i)} className="text-destructive text-xs font-medium px-2">✕</button>
