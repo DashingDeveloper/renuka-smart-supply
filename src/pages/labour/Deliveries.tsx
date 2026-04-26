@@ -26,7 +26,7 @@ const Deliveries = () => {
           : t
       )
     );
-    toast.success("Marked as delivered!");
+    toast.success("Delivery completed", { description: "Customer delivery marked as done." });
     setConfirmDelivery(null);
   };
 

@@ -5,6 +5,7 @@ import { useAppData } from "@/contexts/AppDataContext";
 import { toast } from "sonner";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { parsePositiveInteger } from "@/lib/validation";
 import {
   Select,
   SelectContent,
@@ -25,6 +26,14 @@ const Billing = () => {
   };
   const removeItem = (i: number) => setBillItems((prev) => prev.filter((_, idx) => idx !== i));
 
+  const validatedItems = () => billItems
+    .map((item) => {
+      const product = products.find((p) => p.id === Number(item.productId));
+      const qty = parsePositiveInteger(item.qty, 5000);
+      return product && qty ? { product, qty } : null;
+    })
+    .filter(Boolean) as { product: typeof products[number]; qty: number }[];
+
   const total = billItems.reduce((sum, item) => {
     const product = products.find((p) => p.id === Number(item.productId));
     return sum + (product ? product.price * Number(item.qty || 0) : 0);
@@ -32,27 +41,25 @@ const Billing = () => {
 
   const handleGenerate = async () => {
     if (!selectedCustomer) { toast.error("Select a customer"); return; }
-    const valid = billItems.filter((i) => i.productId && Number(i.qty) > 0);
-    if (valid.length === 0) { toast.error("Add products"); return; }
+    const valid = validatedItems();
+    if (valid.length === 0) { toast.error("Add at least one valid product quantity"); return; }
+    const outOfStock = valid.find(({ product, qty }) => qty > product.stock);
+    if (outOfStock) { toast.error("Billing quantity exceeds stock", { description: `${outOfStock.product.name} ${outOfStock.product.size}: ${outOfStock.product.stock} available.` }); return; }
     setGenerating(true);
     await new Promise((r) => setTimeout(r, 600));
-    toast.success("Bill generated successfully!");
+    toast.success("Bill generated successfully", { description: `Total amount ₹${total.toLocaleString()}` });
     setGenerating(false);
   };
 
   const handleWhatsApp = () => {
     const customer = customers.find((c) => c.id === Number(selectedCustomer));
     if (!customer) { toast.error("Select a customer first"); return; }
-    const items = billItems
-      .filter((i) => i.productId && Number(i.qty) > 0)
-      .map((i) => {
-        const p = products.find((pr) => pr.id === Number(i.productId));
-        return p ? `${i.qty}x ${p.name} ${p.size} = ₹${Number(i.qty) * p.price}` : "";
-      })
-      .filter(Boolean)
+    if (validatedItems().length === 0) { toast.error("Add valid products before sharing"); return; }
+    const items = validatedItems()
+      .map(({ product, qty }) => `${qty}x ${product.name} ${product.size} = ₹${qty * product.price}`)
       .join("\n");
     const msg = encodeURIComponent(`*Renuka Aqua - Invoice*\n\nCustomer: ${customer.name}\n\n${items}\n\n*Total: ₹${total}*\n\nThank you!`);
-    window.open(`https://wa.me/91${customer.phone}?text=${msg}`, "_blank");
+    window.open(`https://wa.me/91${customer.phone}?text=${msg}`, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -108,7 +115,10 @@ const Billing = () => {
             <motion.button whileTap={{ scale: 0.95 }} onClick={handleGenerate} disabled={generating} className="h-12 bg-primary text-primary-foreground rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-primary/90 transition-colors">
               {generating ? "..." : "Generate"}
             </motion.button>
-            <motion.button whileTap={{ scale: 0.95 }} onClick={() => toast.success("Bill saved!")} className="h-12 bg-secondary text-secondary-foreground rounded-xl text-sm font-medium hover:bg-secondary/80 transition-colors">
+            <motion.button whileTap={{ scale: 0.95 }} onClick={() => {
+              if (!selectedCustomer || validatedItems().length === 0) { toast.error("Complete bill details before saving"); return; }
+              toast.success("Bill saved", { description: `Draft total ₹${total.toLocaleString()}` });
+            }} className="h-12 bg-secondary text-secondary-foreground rounded-xl text-sm font-medium hover:bg-secondary/80 transition-colors">
               Save
             </motion.button>
             <motion.button whileTap={{ scale: 0.95 }} onClick={handleWhatsApp} className="h-12 bg-success text-success-foreground rounded-xl text-sm font-medium hover:bg-success/90 transition-colors">

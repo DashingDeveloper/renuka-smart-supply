@@ -18,7 +18,7 @@ const LabourManagement = () => {
       setLabours((prev) =>
         prev.map((l) => l.id === toggleId ? { ...l, present: !l.present } : l)
       );
-      toast.success("Attendance updated!");
+      toast.success("Attendance updated", { description: toggleLabour?.name });
       setToggleId(null);
     }
   };

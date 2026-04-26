@@ -32,12 +32,14 @@ const Trips = () => {
   const [completeId, setCompleteId] = useState<number | null>(null);
 
   const handleCreate = async () => {
-    if (!form.vehicle || !form.labour || !form.route) { toast.error("Fill all fields"); return; }
+    if (!form.vehicle || !form.labour || !form.route) { toast.error("Select vehicle, labour and route"); return; }
+    if (trips.some((t) => t.vehicle === form.vehicle && t.status !== "Completed")) { toast.error("Vehicle already has an active trip"); return; }
+    if (trips.some((t) => t.labour === form.labour && t.status !== "Completed")) { toast.error("Labour already assigned to an active trip"); return; }
     setSaving(true);
     await new Promise((r) => setTimeout(r, 500));
     const newId = Math.max(...trips.map((t) => t.id), 0) + 1;
     setTrips((prev) => [...prev, { id: newId, vehicle: form.vehicle, labour: form.labour, products: 0, route: form.route, status: "Not Started", deliveries: [] }]);
-    toast.success("Trip created!");
+    toast.success("Trip created", { description: `${form.labour} · ${form.route}` });
     setSaving(false);
     setDialogOpen(false);
     setForm({ vehicle: "", labour: "", route: "" });
@@ -46,7 +48,7 @@ const Trips = () => {
   const handleComplete = () => {
     if (completeId !== null) {
       setTrips((prev) => prev.map((t) => t.id === completeId ? { ...t, status: "Completed" } : t));
-      toast.success("Trip completed!");
+      toast.success("Trip completed successfully");
       setCompleteId(null);
     }
   };

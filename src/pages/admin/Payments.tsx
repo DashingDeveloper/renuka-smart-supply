@@ -5,6 +5,7 @@ import { useAppData } from "@/contexts/AppDataContext";
 import { useState } from "react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { cleanText, parsePositiveNumber, todayLabel } from "@/lib/validation";
 import {
   Dialog,
   DialogContent,
@@ -38,15 +39,17 @@ const Payments = () => {
   };
 
   const handleAdd = async () => {
-    if (!form.desc || !form.amount || !form.type) { toast.error("Fill all fields"); return; }
+    const desc = cleanText(form.desc, 100);
+    const amount = parsePositiveNumber(form.amount, 1000000);
+    if (!desc || !amount || !form.type) { toast.error("Fill all fields with a valid amount"); return; }
     setSaving(true);
     await new Promise((r) => setTimeout(r, 400));
     const newId = Math.max(...transactions.map((t) => t.id), 0) + 1;
     setTransactions((prev) => [
-      { id: newId, desc: form.desc, amount: Number(form.amount), type: form.type, category: form.category as any, date: "14 Apr" },
+      { id: newId, desc, amount, type: form.type, category: form.category as any, date: todayLabel() },
       ...prev,
     ]);
-    toast.success("Transaction added!");
+    toast.success("Transaction added", { description: `${form.category} · ₹${amount.toLocaleString()}` });
     setSaving(false);
     setDialogOpen(false);
     setForm({ desc: "", amount: "", type: "", category: "Income" });

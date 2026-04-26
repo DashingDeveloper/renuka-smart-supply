@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { cleanText, digitsOnly, isTenDigitPhone } from "@/lib/validation";
 import {
   Dialog,
   DialogContent,
@@ -28,19 +29,25 @@ const Customers = () => {
   );
 
   const handleAdd = async () => {
-    if (!form.name || !form.phone) {
+    const name = cleanText(form.name, 80);
+    const phone = digitsOnly(form.phone);
+    if (!name || !phone) {
       toast.error("Please fill all fields");
       return;
     }
-    if (form.phone.length !== 10) {
+    if (!isTenDigitPhone(phone)) {
       toast.error("Phone must be 10 digits");
+      return;
+    }
+    if (customers.some((c) => c.phone === phone)) {
+      toast.error("Customer phone already exists");
       return;
     }
     setSaving(true);
     await new Promise((r) => setTimeout(r, 400));
     const newId = Math.max(...customers.map((c) => c.id), 0) + 1;
-    setCustomers((prev) => [...prev, { id: newId, name: form.name, phone: form.phone, pending: 0 }]);
-    toast.success("Customer added!");
+    setCustomers((prev) => [...prev, { id: newId, name, phone, pending: 0 }]);
+    toast.success("Customer added successfully", { description: name });
     setSaving(false);
     setDialogOpen(false);
     setForm({ name: "", phone: "" });
@@ -126,7 +133,7 @@ const Customers = () => {
                   type="tel"
                   maxLength={10}
                   value={form.phone}
-                  onChange={(e) => setForm({ ...form, phone: e.target.value.replace(/\D/g, "") })}
+                  onChange={(e) => setForm({ ...form, phone: digitsOnly(e.target.value) })}
                   placeholder="10-digit number"
                   className="w-full h-12 px-4 bg-secondary rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                 />

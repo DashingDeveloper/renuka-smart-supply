@@ -8,6 +8,7 @@ import { Plus, ShoppingCart, Check } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import { parsePositiveInteger, todayLabel } from "@/lib/validation";
 import {
   Dialog,
   DialogContent,
@@ -45,22 +46,26 @@ const Orders = () => {
 
   const handleCreate = async () => {
     if (!selectedCustomer) { toast.error("Select a customer"); return; }
-    const validItems = orderItems.filter((i) => i.productId && Number(i.qty) > 0);
-    if (validItems.length === 0) { toast.error("Add at least one product"); return; }
+    const validItems = orderItems
+      .map((i) => ({ ...i, qtyValue: parsePositiveInteger(i.qty, 5000), product: products.find((p) => p.id === Number(i.productId)) }))
+      .filter((i) => i.product && i.qtyValue);
+    if (validItems.length === 0) { toast.error("Add at least one valid product quantity"); return; }
+    const outOfStock = validItems.find((i) => i.qtyValue! > i.product!.stock);
+    if (outOfStock) { toast.error("Order quantity exceeds stock", { description: `${outOfStock.product!.name} ${outOfStock.product!.size}: ${outOfStock.product!.stock} available.` }); return; }
 
     setSaving(true);
     await new Promise((r) => setTimeout(r, 500));
 
     const customer = customers.find((c) => c.id === Number(selectedCustomer))!;
     const items = validItems.map((i) => {
-      const p = products.find((pr) => pr.id === Number(i.productId))!;
-      return { productId: p.id, name: `${p.name} ${p.size}`, qty: Number(i.qty), price: p.price };
+      const p = i.product!;
+      return { productId: p.id, name: `${p.name} ${p.size}`, qty: i.qtyValue!, price: p.price };
     });
     const amount = items.reduce((s, i) => s + i.qty * i.price, 0);
     const newId = `ORD-${String(orders.length + 1).padStart(3, "0")}`;
 
-    setOrders((prev) => [{ id: newId, customerId: customer.id, customer: customer.name, items, status: "Pending", amount, date: "14 Apr" }, ...prev]);
-    toast.success(`Order ${newId} created!`);
+    setOrders((prev) => [{ id: newId, customerId: customer.id, customer: customer.name, items, status: "Pending", amount, date: todayLabel() }, ...prev]);
+    toast.success("Order created successfully", { description: `${newId} · ₹${amount.toLocaleString()}` });
     setSaving(false);
     setDialogOpen(false);
     setSelectedCustomer("");
@@ -70,7 +75,7 @@ const Orders = () => {
   const handleMarkDelivered = () => {
     if (markId) {
       setOrders((prev) => prev.map((o) => o.id === markId ? { ...o, status: "Delivered" } : o));
-      toast.success("Order marked as delivered!");
+      toast.success("Order marked as delivered", { description: markId });
       setMarkId(null);
     }
   };

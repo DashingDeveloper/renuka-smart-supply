@@ -8,6 +8,7 @@ import { Plus, Search, Edit, Trash2, X, Package } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import { parsePositiveNumber } from "@/lib/validation";
 import {
   Dialog,
   DialogContent,
@@ -51,21 +52,27 @@ const Products = () => {
   };
 
   const handleSave = async () => {
-    if (!form.name || !form.size || !form.price) {
+    const price = parsePositiveNumber(form.price, 100000);
+    if (!form.name || !form.size || !price) {
       toast.error("Please fill all fields");
+      return;
+    }
+    const duplicate = products.some((p) => p.name === form.name && p.size === form.size && p.id !== editProduct?.id);
+    if (duplicate) {
+      toast.error("This product already exists");
       return;
     }
     setSaving(true);
     await new Promise((r) => setTimeout(r, 400));
     if (editProduct) {
       setProducts((prev) =>
-        prev.map((p) => p.id === editProduct.id ? { ...p, name: form.name, size: form.size, price: Number(form.price) } : p)
+        prev.map((p) => p.id === editProduct.id ? { ...p, name: form.name, size: form.size, price } : p)
       );
-      toast.success("Product updated!");
+      toast.success("Product updated", { description: `${form.name} ${form.size} · ₹${price}` });
     } else {
       const newId = Math.max(...products.map((p) => p.id), 0) + 1;
-      setProducts((prev) => [...prev, { id: newId, name: form.name, size: form.size, price: Number(form.price), stock: 0 }]);
-      toast.success("Product added!");
+      setProducts((prev) => [...prev, { id: newId, name: form.name, size: form.size, price, stock: 0 }]);
+      toast.success("Product added", { description: `${form.name} ${form.size} · ₹${price}` });
     }
     setSaving(false);
     setDialogOpen(false);

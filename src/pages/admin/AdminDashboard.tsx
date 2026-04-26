@@ -18,6 +18,7 @@ import {
   BarChart3,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import deliveryImage from "@/assets/renuka-aqua-delivery.jpg";
 
 const quickActions = [
   { label: "Create Order", icon: ShoppingCart, path: "/admin/orders", color: "bg-primary text-primary-foreground" },
@@ -43,6 +44,20 @@ const AdminDashboard = () => {
       <div className="min-h-screen bg-background pb-24 md:pb-28">
         <PageHeader title={`Hi, ${user?.name}`} subtitle="Welcome to Renuka Aqua" />
         <div className="mx-auto w-full max-w-6xl px-4 py-4 sm:px-6 lg:px-8 space-y-6">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35 }}
+            className="relative overflow-hidden rounded-xl border border-border bg-card shadow-sm"
+          >
+            <img src={deliveryImage} alt="Renuka Aqua delivery worker loading water cans" width={1280} height={720} className="h-36 w-full object-cover sm:h-48 lg:h-56" />
+            <div className="absolute inset-0 bg-gradient-to-r from-card/95 via-card/45 to-transparent" />
+            <div className="absolute left-4 top-1/2 max-w-[70%] -translate-y-1/2 sm:left-6">
+              <p className="text-xs font-semibold text-primary">Today’s operations</p>
+              <p className="mt-1 text-xl font-bold text-foreground sm:text-2xl">Water & cold drink supply</p>
+            </div>
+          </motion.div>
+
           <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-3">
             <StatCard label="Today Sales" value={`₹${todaySales.toLocaleString()}`} icon={IndianRupee} color="success" />
             <StatCard label="Cash Collected" value="₹8,200" icon={Wallet} color="primary" />

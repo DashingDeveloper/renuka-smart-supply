@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import deliveryImage from "@/assets/renuka-aqua-delivery.jpg";
+import { digitsOnly, isTenDigitPhone } from "@/lib/validation";
 
 const Login = () => {
   const { login } = useAuth();
@@ -14,23 +16,35 @@ const Login = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isTenDigitPhone(phone)) {
+      toast.error("Enter a valid 10-digit mobile number");
+      return;
+    }
+    if (password.trim().length < 4) {
+      toast.error("PIN must be at least 4 digits");
+      return;
+    }
     setLoading(true);
     await new Promise((r) => setTimeout(r, 600));
     const success = login(phone, password);
     setLoading(false);
     if (!success) {
-      toast.error("Invalid phone number or password");
+      toast.error("Invalid phone number or password", { description: "Use the demo credentials shown below." });
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background px-6">
+    <div className="grid min-h-screen bg-background lg:grid-cols-[1.05fr_0.95fr]">
+      <div className="hidden min-h-screen overflow-hidden lg:block">
+        <img src={deliveryImage} alt="Renuka Aqua delivery vehicle with water cans" width={1280} height={720} className="h-full w-full object-cover" />
+      </div>
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-sm"
+        className="flex min-h-screen w-full flex-col justify-center px-6 py-10 sm:px-10"
       >
+        <div className="mx-auto w-full max-w-sm">
         <div className="flex flex-col items-center mb-10">
           <div className="w-20 h-20 rounded-xl bg-primary flex items-center justify-center mb-4 shadow-lg">
             <Droplets className="w-10 h-10 text-primary-foreground" />
@@ -46,7 +60,7 @@ const Login = () => {
               type="tel"
               placeholder="Mobile Number"
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={(e) => setPhone(digitsOnly(e.target.value))}
               className="pl-11 h-14 text-base rounded-xl"
               maxLength={10}
               required
@@ -79,6 +93,7 @@ const Login = () => {
           <p className="text-xs text-muted-foreground">
             Labour: 9876543211 / 1111
           </p>
+        </div>
         </div>
       </motion.div>
     </div>
