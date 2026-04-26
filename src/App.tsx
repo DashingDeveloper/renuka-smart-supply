@@ -1,4 +1,3 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
@@ -22,8 +21,6 @@ import LabourHome from "./pages/labour/LabourHome";
 import Deliveries from "./pages/labour/Deliveries";
 import PaymentEntry from "./pages/labour/PaymentEntry";
 import NotFound from "./pages/NotFound";
-
-const queryClient = new QueryClient();
 
 const AppRoutes = () => {
   const { user, isAdmin } = useAuth();
@@ -71,19 +68,17 @@ const AppRoutes = () => {
 };
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <AuthProvider>
-        <AppDataProvider>
-          <BrowserRouter>
-            <AppRoutes />
-          </BrowserRouter>
-        </AppDataProvider>
-      </AuthProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <TooltipProvider>
+    <Toaster />
+    <Sonner />
+    <AuthProvider>
+      <AppDataProvider>
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
+      </AppDataProvider>
+    </AuthProvider>
+  </TooltipProvider>
 );
 
 export default App;
