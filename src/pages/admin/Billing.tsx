@@ -120,7 +120,10 @@ const Billing = () => {
             <motion.button whileTap={{ scale: 0.95 }} onClick={handleGenerate} disabled={generating} className="h-12 bg-primary text-primary-foreground rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-primary/90 transition-colors">
               {generating ? "..." : "Generate"}
             </motion.button>
-            <motion.button whileTap={{ scale: 0.95 }} onClick={() => toast.success("Bill saved!")} className="h-12 bg-secondary text-secondary-foreground rounded-xl text-sm font-medium hover:bg-secondary/80 transition-colors">
+            <motion.button whileTap={{ scale: 0.95 }} onClick={() => {
+              if (!selectedCustomer || validatedItems().length === 0) { toast.error("Complete bill details before saving"); return; }
+              toast.success("Bill saved", { description: `Draft total ₹${total.toLocaleString()}` });
+            }} className="h-12 bg-secondary text-secondary-foreground rounded-xl text-sm font-medium hover:bg-secondary/80 transition-colors">
               Save
             </motion.button>
             <motion.button whileTap={{ scale: 0.95 }} onClick={handleWhatsApp} className="h-12 bg-success text-success-foreground rounded-xl text-sm font-medium hover:bg-success/90 transition-colors">
